@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import "./WeatherBtn.style.css";
 
-const WeatherBtn = ({ setCity, cities, getCurrentLocation }) => {
+const WeatherBtn = ({ city, setCity, cities, getCurrentLocation }) => {
+  const [current, setCurrent] = useState("Current")
+
   return (
     <div className="weather-btn">
-      <Button variant="warning" onClick={()=>getCurrentLocation()}>
-          Current
-        </Button>
+      <Button
+        variant={current === "Current" && city === "" ? "dark" : "warning"}
+        onClick={() => {
+          getCurrentLocation();
+          setCurrent("Current")
+          setCity("")
+        }}
+      >
+        Current
+      </Button>
       {cities.map((item, index) => (
-        <Button variant="warning" key={index} onClick={() => setCity(item)}>
+        <Button
+          variant={city === item ? "dark" : "warning"}
+          key={index}
+          onClick={() => {
+            setCity(item);
+          }}
+        >
           {item}
         </Button>
       ))}

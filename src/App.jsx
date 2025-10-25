@@ -4,6 +4,7 @@ import { call_api } from "./utils/call_api";
 import Weather from "./component/Weather/Weather";
 import WeatherBtn from "./component/WeatherBtn/WeatherBtn";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ClipLoader } from "react-spinners";
 
 const API_KEY = "0b455b67f7ff2cd45dcccd33831a3728";
 
@@ -17,6 +18,7 @@ function App() {
   const [weatherData, setWeatherData] = useState(null);
   const cities = ["Paris", "New York", "Tokyo", "Seoul"];
   const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
@@ -25,7 +27,9 @@ function App() {
       console.log(lat, lon);
       let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
       console.log(url);
+      setLoading(true);
       let result = await call_api(url);
+      setLoading(false);
       console.log(result);
       setWeatherData(result);
     });
@@ -33,7 +37,9 @@ function App() {
 
   const getWeatherByCity = useCallback(async () => {
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+    setLoading(true);
     let result = await call_api(url);
+    setLoading(false);
     console.log("city data", result);
     setWeatherData(result);
   }, [city]);
@@ -48,10 +54,19 @@ function App() {
 
   return (
     <div>
-      <div className="container">
-        <Weather weatherData={weatherData} />
-        <WeatherBtn setCity={setCity} cities={cities} getCurrentLocation={getCurrentLocation}/>
-      </div>
+      {loading ? (
+        <ClipLoader color="#f88c6b" loading={loading} size={150} />
+      ) : (
+        <div className="container">
+          <Weather weatherData={weatherData} />
+          <WeatherBtn
+            city={city}
+            setCity={setCity}
+            cities={cities}
+            getCurrentLocation={getCurrentLocation}
+          />
+        </div>
+      )}
     </div>
   );
 }
