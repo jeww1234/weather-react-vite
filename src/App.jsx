@@ -55,7 +55,7 @@ function App() {
   return (
     <div>
       {loading ? (
-        <ClipLoader color="#f88c6b" loading={loading} size={150} />
+        <ClipLoader className="spinner" color="#f88c6b" loading={loading} size={150} />
       ) : (
         <div className="container">
           <Weather weatherData={weatherData} />
